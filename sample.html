@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="main">
+	<div id="container"></div>
+	<div class="console" >
+	<!-- 	<button class="button button--secondary">
+		  <span class="button__inner">Run</span>
+		</button> -->
+		<a href="#" id="run" class="button">RUN</a>
+		<div id="console"></div>
+	</div>
+</div>
+
+
+<script src="monaco-editor/min/vs/loader.js"></script>
+<script>
+	// (function() {
+	// 	console.log = function (message) {
+ //        	document.getElementById("console").innerHTML = message;
+	//         oldLog.apply(console, arguments);
+	//     };
+	// })();
+	var logBackup = console.log;
+	var logMessages = [];
+
+	console.log = function() {
+	    logMessages.push.apply(logMessages, arguments);
+	    // document.getElementById("console").innerHTML = logMessages.toString();
+	    // logMessages = arguments + "\n";
+	    logBackup.apply(console, arguments);
+	};
+
+    require.config({ paths: { 'vs': 'monaco-editor/min/vs' }});
+    var editor;
+    var code = " var x = 10; \n var y = 20; \n alert(x + y);";
+    var str = "var x = 5;if (x == 5) {console.log('z is 42'); z = 42;} else z = 0;";
+
+    require(['vs/editor/editor.main'], function() {
+        editor = monaco.editor.create(document.getElementById("container"), {
+			// value: "// First line\nfunction hello() {\n\talert('Hello world!');\n}\n// Last line",
+			value: code,
+			language: "javascript",
+
+			lineNumbers: true,
+			roundedSelection: false,
+			scrollBeyondLastLine: false,
+			readOnly: false,
+			theme: "vs-dark",
+		})
+
+    });
+
+    // console.log('sdfs')
+
+    // var res = eval(code);
+    // setTimeout(function () {
+    // 	console.log(editor);
+    // 	console.log(editor.getValue());
+    // }, 2000)
+    // eval(code);
+    
+    var runBtn = document.getElementById("run"); 
+    runBtn.onclick = function() {
+    	// eval(code);
+    	eval(editor.getValue());
+    	document.getElementById("console").innerHTML = "> " + logMessages[logMessages.length - 1].toString();
+
+    };
+	// console.log(eval(str));
+	// document.getElementById("console").innerHTML = "sdfsddsffffffffffffffffffffff"
+    
+
+</script>
+</body>
+</html>
